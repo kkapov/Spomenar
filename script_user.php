@@ -10,14 +10,14 @@ if(isset($_POST['action']) && $_POST['action'] === "answer" ){
     $questionId=$_POST['questionId'];
     updateAnswer($userId, $questionId, $answer);
 
-    echo json_encode( $result );
+    echo json_encode( "success" );
     flush();
 
 }
-else if(isset($_GET['action']) && $_GET['action'] === "users"){  //dohvacamo sve korisnike
+else if(isset($_POST['action']) && $_POST['action'] === "users"){  //dohvacamo sve korisnike
 
     $users = getUsers(); //dohvacamo korisnike iz baze podataka database_user.php i vrati ih
-    echo json_encode( "korisnici" );
+    echo json_encode( $users );
     flush();
 }
 else if(isset($_POST['action']) && $_POST['action'] === "makeAdmin"){  //napravi usera sa poslanim id adminom

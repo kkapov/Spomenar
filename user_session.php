@@ -7,6 +7,7 @@ function setSessionUser ($user) {   //postavljanje aktivnog usera
     $_SESSION["user"] = $user;
 }
 
+
 function getSessionUser () {    //dobavljanje usera
     return $_SESSION["user"];
 }

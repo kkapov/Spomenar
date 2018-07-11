@@ -1,5 +1,5 @@
 <?php
-    require_once 'user_session.php';
+    require_once 'user_session.php'; 
     if(isUserLogined() === -1){
         header("Location: login.php");
     }
@@ -43,7 +43,7 @@
     var users;
     getUsers();
 
-    function getUsers(){ //dohvati korisnike preko ajaxa i pozovi metodu za prikazivanje usera
+    function getUsers(){ //dobavi usere preko ajaxa i pozovi metodu za prikazivanje usera
         $.ajax({
             url : "script_user.php",
 
@@ -56,7 +56,6 @@
             dataType : "json",
             success : function(data)
             {
-              console.log(data);
                 users = data;
                 showUsers();
             },
@@ -68,7 +67,7 @@
 
     }
 
-    function makeAdmin(userId){ //napravi usera adminom i onda ponovo ispisi usera sa tim novim podacima
+    function makeAdmin(userId){ //napravi usera adminom i onda ponovo iscrtaj usera sa tim novim podacima
 
         $.ajax({
             url : "script_user.php",
@@ -113,7 +112,7 @@
             td.css("width", "300px");
             var td2 = $("<td></td>");
             if(users[i].userType != 1){
-                var button = $("<button class='makeAdmin'>Napravi adminom</button>");
+                var button = $("<button class='makeAdmin'>Postani admin</button>");
                 button.val(users[i].id);
                 button.css("margin-left", "17px");
                 td2.append(button);

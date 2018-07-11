@@ -25,18 +25,12 @@
         <h3> Spomenar </h3>
 
         <div style="margin-bottom: 50px">
-            <p style="float: right">trenutno pitanje <span id="currectQuestionSpan">0</span> od <span id="allQuestionSpan">0</span></p>
+            <p style="float: right">Pitanje:  <span id="currectQuestionSpan">0</span> / <span id="allQuestionSpan">0</span></p>
         </div>
         <br />
         <div id="dinamicContent"><!-- div za dinamicko kreiranje elemenata -->
 
-        </div> <?php
-
-                $answers = getAnswersForQuestions($question->questionId);
-
-                foreach ($answers as $answer){
-                    addAnswerCell($answer);
-                } ?>
+        </div>
     </div>
 
 </div>
@@ -60,28 +54,31 @@
             dataType : "json",
             success : function(data)
             {
-               //console.log(data);
+               console.log(data);
                max=data.length;
                questions = new Array();
                 for(var i = 0; i < max; i++){
               //      console.log("RANDOM (0 i " + data.length + "): " + random);
                     questions.push(data[i]);
+
+            //        console.log(question);
                   //  data.splice(random, 1);
                 }
 
-              /*  for(var i = 0; i < questions.length; i++){
-                   console.log("QUESTION: " + questions[i]['question']);
-                }*/
+              //  for(var i = 0; i < questions.length; i++){
+                //   console.log("QUESTION: " + questions[i]['question']);
+                //}
                 showQuestion(data); //nako toga pokazi formu za prvo pitanje
             },
             error : function (xhr, status, errorThrown){
-                alert("Greska");
+                alert("Greska!");
             }
         });
     }
     function showQuestion(data){ //pokazi pitanje koje je na redu
         $("#dinamicContent").empty();
         var currentQuestion = questions[currentQuestionStep - 1];
+
         $("#currectQuestionSpan").html(currentQuestionStep);   //update trenutno pitanje i broj ukupnih pitanja
         $("#allQuestionSpan").html(questions.length);
 
@@ -103,7 +100,7 @@
 
         }
 
-        //show answer form
+        //prikazi answer form
         if(currentQuestion['questionType'] == 1){  // ako su type 1 ili 3 dodaj input tipa text za upisat odgovor
             var answer = $("<input />");
             answer.attr("type", "text");
@@ -113,9 +110,41 @@
             $("#dinamicContent").append(answer);
         }
         else if(currentQuestion['questionType'] == 2){// ako je type 2, onda dodaj 4 buttona sa tekstom iz ponudjenih odgovora
+            var answers = currentQuestion['answers'];
 
+            console.log(answers);
+            for(var i = 0; i < answers.length; i++){
+
+                var button = $("<input type='checkbox' name='answer' value='"+answers[i]+"'/>");
+                button.html(answers[0]);
+                button.attr("class", "buttonSelect");
+                $("#dinamicContent").append(button);
+
+                button.on("click", function () {  //dodaj click butonima
+                    selectedButtonForType2 = $(this);
+                    console.log(selectedButtonForType2.val());
+
+                });
+            }
         }
-        else if(currentQuestion['questionType'] == 4){// ako je type 2, onda dodaj 2 buttona
+        else if(currentQuestion['questionType'] == 4){ // ako je type 4, onda dodaj 4 checked box
+          var answers = currentQuestion['answers'];
+          for(var i = 0; i < answers.length; i++){
+             var button = $("<input type='radio' name='answer' value='"+ answers[i]+"'>");
+             button.html("nesto");
+              if(i % 2 == 0){
+                  button.css("margin-left", "0px");
+              }else{
+                  button.css("margin-right", "0px");
+              }
+              button.attr("class", "buttonSelect");
+              $("#dinamicContent").append(button);
+
+              button.on("click", function () {  //na click spremi vrijednost
+                  selectedButtonForType2 = $(this);
+                  console.log(selectedButtonForType2.val());
+              });
+          }
         }
 
         //answer question button
@@ -126,39 +155,61 @@
         $("#dinamicContent").append(answerQuestion);
         var questionId=currentQuestion['questionId'];
         answerQuestion.on("click", function () {
-           var odgovor=$("#answer").val();
-           console.log(odgovor);
-           setAnswer(odgovor, questionId);
 
+          if(currentQuestion['questionType'] == 1)
+          {
+            var odgovor=$("#answer").val();
+            console.log(odgovor);
+
+          }
+          else if(currentQuestion['questionType'] == 2)
+          {
+            //console.log(odgovor);
+          }
+          else if(currentQuestion['questionType'] == 3)
+          {
+
+            //console.log(odgovor);
+
+          }
+          else if(currentQuestion['questionType'] == 4)
+          {
+            var odgovor=selectedButtonForType2.val();
+
+            console.log(odgovor);
+
+          }
+           setAnswer(odgovor, questionId);
            var nextQuestion = $("<button></button>");  //dodaj next button, a ako je zadnje pitanje onda button rezultat
            nextQuestion.attr("id", "nextQuestion");
+           var previousQuestion= $("<button></button>");
+           previousQuestion.attr("id", "previousQuestion")
            if((currentQuestionStep) === questions.length){
-               nextQuestion.html("Gotovo");
-           }else{
-               nextQuestion.html("Sljedeće pitanje");
+             var aHrefBack = $("<a>Gotovo</a>");
+             aHrefBack.attr("href", "index.php");
+             $("#dinamicContent").append(aHrefBack);
            }
-           $("#dinamicContent").append(nextQuestion);
+           else{
+               nextQuestion.html("Sljedeće pitanje");
+               $("#dinamicContent").append(nextQuestion);
 
-           nextQuestion.on("click", function () {  //click na button, ako je zadnje pitanje onda set result, a ako nije onda povecaj step i ponovo pozovi showQuestion
-
-               if((currentQuestionStep) === questions.length){
-                 var aHrefBack = $("<a>Gotovo</a>");
-                 aHrefBack.attr("href", "index.php");
-                 $("#dinamicContent").append(aHrefBack);
-
-               }else{
-                   currentQuestionStep++;
-                   showQuestion();
-               }
-
-         });
-
+               previousQuestion.html("Prethodno pitanje");
+               $("#dinamicContent").append(previousQuestion);
+               nextQuestion.on("click", function () {
+               currentQuestionStep++;
+               showQuestion();
+              });
+              previousQuestion.on("click", function () {
+              currentQuestionStep--;
+              showQuestion();
+             });
+           }
        });
-
     }
 
-    function setAnswer(answer, questionId) {
-        console.log("userID: " +$("#userId").val() + questionId);
+    function setAnswer(answer, questionId) {  //prikazi u rezultat korisnika i dodaj link za vracanje na index.php
+        console.log("userID: " +$("#userId").val());
+        console.log("questionId" + questionId);
         $.ajax({
             url : "script_user.php",
             data :
@@ -166,8 +217,12 @@
                     action: "answer",
                     userId: $("#userId").val(),
                     questionId: questionId,
-                   answer: answer
+                    answer: answer
                 },
+            success: function(data)
+            {
+              console.log(data);
+            },
             type: "POST",
             dataType : "json"
         });
@@ -176,5 +231,7 @@
         $("#answer").attr("disabled", true);
         $(".answer").attr("disabled", true);
         $(".buttonSelect").attr("disabled", true);
+
     }
+
 </script>

@@ -3,6 +3,7 @@
     if(isUserLogined() === -1){
         header("Location: login.php");
     }
+
 ?>
 
 <?php

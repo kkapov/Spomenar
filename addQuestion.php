@@ -1,5 +1,5 @@
 <?php
-    require_once 'user_session.php';
+    require_once 'user_session.php';  //pocetak kao i addCategory.php
     if(isUserLogined() === -1){
         header("Location: login.php");
     }
@@ -14,8 +14,9 @@
 
     $errors = array();
 
-    if(isset($_POST['submit'])){  // provjera unesenih podataka
+    if(isset($_POST['submit'])){
 
+        //provjera da li ima gresaka t forme
         if(!isset($_POST['questionType'])){
             array_push($errors, "Odaberite tip pitanja!");
         }
@@ -41,7 +42,7 @@
             }
           }
 
-        //ako nema gresaka napraviti object question, spremiti u njega podatke, pa onda spremiti u bazu podataka
+        //ako nema gresaka napravi object question i spremi u njega podatke i onda spremi te podatke u bazu podataka
 
         if(sizeof($errors) == 0){
             $question = new Question();
@@ -65,7 +66,7 @@
             }
 
 
-            $returnMessage = addQuestion($question, $answers); //šalje se u database_question.php
+            $returnMessage = addQuestion($question, $answers); //dodavanje pitanja u bazu - database_question.php
             if(strlen($returnMessage) > 0){
                 array_push($errors, $returnMessage);
             }
@@ -114,6 +115,7 @@
         </form>
 
     </div>
+
 </div>
 
 <script>
@@ -179,7 +181,10 @@
           $("#questionAreaTable").append(trAnswer1);
           $("#questionAreaTable").append(trAnswer2);
         }
+  /*      else if ($("#questionType option:selected").val() === "3"){
 
+      
+        }*/
         var trSubmit = $("<tr></tr>");
         var tdSubmit = $("<td><input type='submit' id='submit' name='submit' value='Dodaj pitanje' /></td>");
         trSubmit.append($("<td></td>"));

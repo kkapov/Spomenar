@@ -21,7 +21,7 @@
             array_push($errors, "Unesite lozinke koje se podudaraju i imaju više od 4 znaka.");
         }
         if(sizeof($errors) == 0){
-            $user = new User(); //ako nema gresaka, sve podatke posalji u database_user
+            $user = new User();
 
             $user->name = htmlentities($_POST['user']);
             $user->email = htmlentities($_POST['email']);
@@ -33,7 +33,9 @@
             if(strlen($returnMessage) > 0){
                 array_push($errors, $returnMessage);
             }
+
         }
+
     }
 
 ?>

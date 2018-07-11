@@ -1,7 +1,5 @@
 body{
-    font-family: "Comic Sans MS";
-    font-size: 17px;
-    color: #ff0066;
+    font-family: 'PT Sans', sans-serif;
     height:100%;
     margin: 0px;
     background: url("background.jpg");
@@ -25,7 +23,7 @@ input, button, select{
 #user_info{
     width: 100%;
     height: 40px;
-    background: #ff80d5;
+    background: #99ffff;
 }
 #sidebar{
     float: left;
@@ -75,7 +73,7 @@ input, button, select{
 }
 
 #user_info a:hover{
-    color: #0080ff;
+    color: slategray;
     text-decoration: underline;
 }
 #categoryAndUseMain button{

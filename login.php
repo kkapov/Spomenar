@@ -18,8 +18,8 @@
         if(!isset($_POST['pass']) || strlen($_POST['pass']) < 1 ){
             array_push($errors, "Unesite lozinku");
         }
-        if(sizeof($errors) == 0){   //ako nema grešaka, dobavljamo podatke iz forme, zovemo metodu login koja se nalazi u database_user.php da provjerimo
-            //ako postoji korisnik s tim username i passwordom u bazi, ako ne postoji, dodajemo gresku u polje gresaka $errors
+        if(sizeof($errors) == 0){   //ako nema grešaka, izvrsavaj ovo ispod: dobavljamo podatke iz forme, kriptiramo password, zovemo metodu login koja se nalazi u database_user.php da provjerimo
+            //postoji li korisnik s tim username i passwordom u bazi, ako ne postoji, dodajemo gresku u polje gresaka $errors
 
             $userNameOrEmail = htmlentities($_POST['user']);
             $password = htmlentities($_POST['pass']);
@@ -48,12 +48,12 @@
         }
         ?>
     </div>
-    <div id="center">
+    <div id="center"> 
         <div id="login">  <!-- div s login elementima-->
 
             <h1>Prijava</h1>
 
-            <form method="post" action="login.php">  <!-- preko posta preko buttona "Prijava" saljemo podatke iz forme u ovaj isti file-->
+            <form method="post" action="login.php"> <!-- preko posta preko buttona "Prijava" saljemo podatke iz forme u ovaj isti file-->
                 <table>
 
                     <tr>
