@@ -105,7 +105,7 @@
                 <option disabled selected value> -- izaberite opciju -- </option>
                 <option value="1">Samo pitanje</option>
                 <option value="2">Pitanje sa ponuđenim odgovorima</option>
-                <option value="3">Pitanje sa slikom</option>
+            <!--    <option value="3">Pitanje sa slikom</option> -->
                 <option value="4">Ili - ili</option>
             </select>
 
@@ -183,7 +183,7 @@
         }
   /*      else if ($("#questionType option:selected").val() === "3"){
 
-      
+
         }*/
         var trSubmit = $("<tr></tr>");
         var tdSubmit = $("<td><input type='submit' id='submit' name='submit' value='Dodaj pitanje' /></td>");

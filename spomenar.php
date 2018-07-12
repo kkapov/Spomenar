@@ -39,17 +39,17 @@
 
     //globalne varijable koje ce se koristiti u Spomenaru
 
-    var questions = new Array();   //sva pitanja iz odabrane kategorije
+    var questions = new Array();
+    var niz=new Array();   //sva pitanja iz odabrane kategorije
     var currentQuestionStep = 1;    //trenutno pitanje
     start();
     function start() { //dobavi pitanja za kategoriju
         $.ajax(
           { //ajax za dobavljanje pitanja
             url : "script_question.php",
-
             data :
                 {
-                    action : "get",
+                    action : "get_questions",
                 },
             dataType : "json",
             success : function(data)
@@ -58,16 +58,8 @@
                max=data.length;
                questions = new Array();
                 for(var i = 0; i < max; i++){
-              //      console.log("RANDOM (0 i " + data.length + "): " + random);
                     questions.push(data[i]);
-
-            //        console.log(question);
-                  //  data.splice(random, 1);
                 }
-
-              //  for(var i = 0; i < questions.length; i++){
-                //   console.log("QUESTION: " + questions[i]['question']);
-                //}
                 showQuestion(data); //nako toga pokazi formu za prvo pitanje
             },
             error : function (xhr, status, errorThrown){
@@ -82,7 +74,7 @@
         $("#currectQuestionSpan").html(currentQuestionStep);   //update trenutno pitanje i broj ukupnih pitanja
         $("#allQuestionSpan").html(questions.length);
 
-        var selectedButtonForType2; // varijabla za kliknuti odgovor za type pitanja 2 i 4
+        var selectedButtonForType4; // varijabla za kliknuti odgovor za type pitanja  4
 
         var questionParagraph = $("<p id='questionParagraph'></p>");  //dodaj paragraf sa pitanje u div
         questionParagraph.html(currentQuestion['question']);
@@ -109,21 +101,21 @@
             $("#dinamicContent").append("<br>");
             $("#dinamicContent").append(answer);
         }
-        else if(currentQuestion['questionType'] == 2){// ako je type 2, onda dodaj 4 buttona sa tekstom iz ponudjenih odgovora
+        else if(currentQuestion['questionType'] == 2){// ako je type 2, onda dodaj 4 checkboxa sa tekstom iz ponudjenih odgovora
             var answers = currentQuestion['answers'];
 
             console.log(answers);
             for(var i = 0; i < answers.length; i++){
+                var checkbox = $("<input type='checkbox' name='answer' value='"+answers[i]+"'/>");
+                checkbox.html(answers[i]);
+                checkbox.attr("class", "buttonSelect");
+                $("#dinamicContent").append(checkbox);
 
-                var button = $("<input type='checkbox' name='answer' value='"+answers[i]+"'/>");
-                button.html(answers[0]);
-                button.attr("class", "buttonSelect");
-                $("#dinamicContent").append(button);
 
-                button.on("click", function () {  //dodaj click butonima
+                checkbox.on("click", function () {  //dodaj click butonima
                     selectedButtonForType2 = $(this);
                     console.log(selectedButtonForType2.val());
-
+                    niz.push(selectedButtonForType2.val());
                 });
             }
         }
@@ -131,7 +123,7 @@
           var answers = currentQuestion['answers'];
           for(var i = 0; i < answers.length; i++){
              var button = $("<input type='radio' name='answer' value='"+ answers[i]+"'>");
-             button.html("nesto");
+             button.html(answers[i]);
               if(i % 2 == 0){
                   button.css("margin-left", "0px");
               }else{
@@ -141,8 +133,8 @@
               $("#dinamicContent").append(button);
 
               button.on("click", function () {  //na click spremi vrijednost
-                  selectedButtonForType2 = $(this);
-                  console.log(selectedButtonForType2.val());
+                  selectedButtonForType4 = $(this);
+                  console.log(selectedButtonForType4.val());
               });
           }
         }
@@ -160,26 +152,24 @@
           {
             var odgovor=$("#answer").val();
             console.log(odgovor);
+            setAnswer(odgovor, questionId);
 
           }
           else if(currentQuestion['questionType'] == 2)
           {
-            //console.log(odgovor);
-          }
-          else if(currentQuestion['questionType'] == 3)
-          {
-
-            //console.log(odgovor);
-
+            for (var i=0; i < niz.length; i++)
+            {
+              var odgovor=niz[i];
+              setAnswer(odgovor, questionId);
+            }
           }
           else if(currentQuestion['questionType'] == 4)
           {
-            var odgovor=selectedButtonForType2.val();
-
+            var odgovor=selectedButtonForType4.val();
             console.log(odgovor);
-
+            setAnswer(odgovor, questionId);
           }
-           setAnswer(odgovor, questionId);
+
            var nextQuestion = $("<button></button>");  //dodaj next button, a ako je zadnje pitanje onda button rezultat
            nextQuestion.attr("id", "nextQuestion");
            var previousQuestion= $("<button></button>");
@@ -211,7 +201,7 @@
         console.log("userID: " +$("#userId").val());
         console.log("questionId" + questionId);
         $.ajax({
-            url : "script_user.php",
+            url : "script_question.php",
             data :
                 {
                     action: "answer",

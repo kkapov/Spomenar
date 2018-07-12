@@ -2,6 +2,6 @@
 
 class Question
 {
-    public $questionId, $question, $questionType, $imageForQuestion;
+    public $questionId, $question, $questionType;
 
 }

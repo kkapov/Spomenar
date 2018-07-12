@@ -2,18 +2,6 @@
 require_once 'database_connect.php';
 require_once 'database_user.php';
 
-if(isset($_POST['action']) && $_POST['action'] === "answer" ){
-
-    //update u bazi korisnici, dohvati podatke i zovi metodu updateBestResult iz file database_user.php
-    $userId = $_POST['userId'];
-    $answer = $_POST['answer'];
-    $questionId=$_POST['questionId'];
-    updateAnswer($userId, $questionId, $answer);
-
-    echo json_encode( "success" );
-    flush();
-
-}
 else if(isset($_POST['action']) && $_POST['action'] === "users"){  //dohvacamo sve korisnike
 
     $users = getUsers(); //dohvacamo korisnike iz baze podataka database_user.php i vrati ih

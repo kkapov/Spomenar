@@ -31,7 +31,7 @@ function registration($user, $password) { //funkciji prosljedujemo kriptirani pa
             $statement->execute();
 
             $user->id = $connection->lastInsertId();    //pridjelimo id novostvorenom korisniku (id je mysql sam stvorio)
-            setSessionUser($user);  //dodamo usera u session (user_session.php) i redirektamo na index.php
+            setSessionUser($user);  //dodamo usera u session (user_session.php) i preusmjerimo na index.php
             header("Location: index.php");
         }
     }
@@ -99,47 +99,4 @@ function setUserAdmin($userId) { // postavi korisnika za administratora
     catch(PDOException $e) {
         echo $e;
     }
-}
-
-function updateAnswer($userId,$questionId, $answer) { //spremanje odgovora
-
-    global $connection;
-
-    try{
-        $statement = $connection->prepare("SELECT * FROM answers WHERE id=:id AND questionId=:questionId");
-        $statement->bindParam(':id', $userId, PDO::PARAM_INT);
-        $statement->bindParam(':questionId', $questionId, PDO::PARAM_INT);
-        $statement->execute();
-        $result = $statement->fetchObject();
-
-        if($result){
-            $answerId = $result->id;
-            $statement = $connection->prepare("UPDATE answers SET textAnswer = :textAnswer WHERE id = :id AND questionId=:questionId");
-            $statement->bindParam(':id', $naswerId, PDO::PARAM_INT);
-            $statement->bindParam(':textAnswer', $answer, PDO::PARAM_STR);
-            $statement->execute();
-        }else{
-            $time = time();
-            $statement = $connection->prepare("INSERT INTO answers (questionId, id, textAnswer) VALUES (:questionId, :id, :textAnswer)");
-            $statement->bindParam(':questionId', $questionId, PDO::PARAM_INT);
-            $statement->bindParam(':id', $userId, PDO::PARAM_INT);
-            $statement->bindParam(':textAnswer', $answer, PDO::PARAM_STR);
-            $statement->execute();
-        }
-    }
-
-
-/*   try {
-      $statement = $connection->prepare("INSERT INTO answers
-                                        (questionId, id, textAnswer) VALUES
-                                        (:questionId, :id, :textAnswer)");
-      $statement->bindParam(':questionId', $questionId, PDO::PARAM_INT);
-      $statement->bindParam(':id', $userId, PDO::PARAM_INT);
-      $statement->bindParam(':textAnswer', $answer, PDO::PARAM_STR);
-      $statement->execute();
-    } */
-     catch(PDOException $e) {
-        echo $e;
-    }
-
 }
